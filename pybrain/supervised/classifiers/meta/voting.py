@@ -51,7 +51,7 @@ class MajorVoting(CombinationRule):
         
         return array(distribution)
     
-class X(CombinationRule):
+class DistributionBasedRule(CombinationRule):
     def combine(self, classifiers, value):
         distributionMatrix = array([classifier.getDistribution(value) for classifier in classifiers])
         
@@ -62,30 +62,30 @@ class X(CombinationRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         abstractMethod()
 
-class SumRule(X):
+class SumRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         nonNormalizedDistribution = distributionMatrix.sum(axis = 0)
         normalizedDistribution = nonNormalizedDistribution / numClassifiers
         
         return normalizedDistribution
     
-class MedianRule(X):
+class MedianRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         distribution = ma.extras.median(distributionMatrix, axis = 0)
         
         return distribution
     
-class MaximumProbabilityRule(X):
+class MaximumProbabilityRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         distribution = distributionMatrix.max(axis = 0)
         return distribution
     
-class MinimumProbabilityRule(X):
+class MinimumProbabilityRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         distribution = distributionMatrix.min(axis = 0)
         return distribution
     
-class ProductRule(X):
+class ProductRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
         distribution = distributionMatrix.prod(axis = 0)
         return distribution
