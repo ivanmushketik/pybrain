@@ -13,7 +13,11 @@ from pybrain.datasets import SequentialDataSet, SupervisedDataSet
 from pybrain.supervised import BackpropTrainer
 from pybrain.tools.customxml import NetworkWriter, NetworkReader
 
-
+def assertListAlmostEqual(testCase, list1, list2, tol):
+    errMsg = "%s != %s with tollerance %e" % (list1, list2, tol)
+    testCase.assertEqual(len(list1), len(list2), errMsg)
+    for a, b in zip(list1, list2):
+         testCase.assertAlmostEqual(a, b, delta=tol, msg=errMsg)
 
 def epsilonCheck(x, epsilon=1e-6):
     """Checks that x is in (-epsilon, epsilon)."""
