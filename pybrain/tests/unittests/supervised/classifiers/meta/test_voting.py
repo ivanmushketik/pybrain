@@ -5,7 +5,7 @@ from numpy import array
 from pybrain.tests.helpers import *
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.classifiers.classifier import ClassfierFactory, Classifier
-from pybrain.supervised.classifiers.meta.voting import VotingFactory, MajorVoting, SumRule, MedianRule, MaximumProbabilityRule, MinimumProbabilityRule, ProductRule
+from pybrain.supervised.classifiers.meta.voting import VotingFactory, MajorVoting, SumRule, MedianRule, MaximumProbabilityRule, MinimumProbabilityRule, ProductRule, WeightedSumRule
 
 class MockFactory(ClassfierFactory):
 
@@ -18,6 +18,8 @@ class MockFactory(ClassfierFactory):
 
 class ConstantClassifier(Classifier):
     def __init__(self, returnValues):
+        Classifier.__init__(self, len(returnValues))
+
         self.returnValues = array(returnValues)
 
     def getDistribution(self, values):
@@ -32,10 +34,19 @@ class VotingTestCase(unittest.TestCase):
 
         self.assertEqual(result, expected)
         
+    # Testing that voting return distribution of correct size
+    def testMajorVotingDistribution(self):
+        classifier = self.createVoting(MajorVoting(), [1, 0, 0], [1, 0, 0], [0, 0, 1])
+        
+        result = classifier.getDistribution([])
+        expected = array([1, 0, 0])
+        
+        assertListAlmostEqual(self, result, expected, 0.00001)
+        
     def createVoting(self, combinationRule, *distributions):
         classifiersFactory = [MockFactory(ConstantClassifier(distribution)) for distribution in distributions]
         voteFactory = VotingFactory(classifiersFactory, combinationRule)
-        classifeir = voteFactory.buildClassifeir(SupervisedDataSet(1, 3))
+        classifeir = voteFactory.buildClassifier(SupervisedDataSet(1, 3))
         return classifeir
         
     def testSumRule(self):
@@ -43,6 +54,15 @@ class VotingTestCase(unittest.TestCase):
         
         result = classifier.getDistribution([])
         expected = array([0.2, 0.5, 0.3])
+        
+        assertListAlmostEqual(self, result, expected, 0.00001)
+        
+    def testWeightedSumRule(self):
+        weights = [1, 2, 3]
+        classifier = self.createVoting(WeightedSumRule(weights), [0.2, 0.5, 0.3], [0, 0.6, 0.4], [0.4, 0.4, 0.2])
+        
+        result = classifier.getDistribution([])
+        expected = array([1.4, 2.9, 1.7])
         
         assertListAlmostEqual(self, result, expected, 0.00001)
         

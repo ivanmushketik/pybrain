@@ -39,14 +39,19 @@ class CombinationRule:
 
 class MajorVoting(CombinationRule):
     def combine(self, classifiers, value):
-        votes = {}
+        numberOfClasses = classifiers[0].distributionLength
+        
+        votes ={}
         for classifier in classifiers:
             prediction = classifier.getPrediction(value)
             votes[prediction] = votes.get(prediction, 0) + 1
     
-        votesArr = array([votes[key] for key in votes.keys()])
-    
-        distribution = [0] * len(votesArr)
+        votesArr = array([0] * numberOfClasses)
+        for i in range(len(votes)):
+            votesArr[i] = votes.get(i, 0)
+           
+                    
+        distribution = [0] * numberOfClasses
         distribution[votesArr.argmax()] = 1
         
         return array(distribution)
@@ -57,6 +62,11 @@ class DistributionBasedRule(CombinationRule):
         
         combinedDistribution = self._getCombinedDistribution(distributionMatrix, len(classifiers))
         
+        # Because voting can be used as a part of other ensamble method, we should normalize result distribution,
+        # because:
+        #  * not all combination rules return normalized distribution
+        #  * non-normalized distribution can give too small or too big confidence/weight to classifier with non-normalized distribution 
+        normalizedDistribution = combinedDistribution / combinedDistribution.sum()
         return combinedDistribution
     
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
@@ -68,6 +78,18 @@ class SumRule(DistributionBasedRule):
         normalizedDistribution = nonNormalizedDistribution / numClassifiers
         
         return normalizedDistribution
+    
+class WeightedSumRule(DistributionBasedRule):
+    def __init__(self, weights):
+        self._weights = vstack(weights)
+    
+    def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
+        assert len(self._weights) == numClassifiers        
+        
+        weightedDistribution = distributionMatrix * self._weights
+        distribution = weightedDistribution.sum(axis = 0)
+        
+        return distribution
     
 class MedianRule(DistributionBasedRule):
     def _getCombinedDistribution(self, distributionMatrix, numClassifiers):
