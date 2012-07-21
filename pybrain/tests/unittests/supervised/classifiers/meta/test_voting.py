@@ -4,10 +4,10 @@ from numpy import array
 
 from pybrain.tests.helpers import *
 from pybrain.datasets import SupervisedDataSet
-from pybrain.supervised.classifiers.classifier import ClassfierFactory, Classifier
+from pybrain.supervised.classifiers.classifier import ClassifierFactory, Classifier
 from pybrain.supervised.classifiers.meta.voting import VotingFactory, MajorVoting, SumRule, MedianRule, MaximumProbabilityRule, MinimumProbabilityRule, ProductRule, WeightedSumRule
 
-class MockFactory(ClassfierFactory):
+class MockFactory(ClassifierFactory):
 
     def __init__(self, classifier):
         self.classifier = classifier

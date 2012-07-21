@@ -3,7 +3,7 @@ from pybrain.datasets import SupervisedDataSet
 
 __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
-class ClassfierFactory:
+class ClassifierFactory:
     def buildClassifier(self, dataset):
         if not isinstance(dataset, SupervisedDataSet):
             raise TypeError("Only SupervisedDataSet can be used to build a classifier")

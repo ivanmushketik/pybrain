@@ -1,10 +1,10 @@
-from pybrain.supervised.classifiers.classifier import Classifier, ClassfierFactory
+from pybrain.supervised.classifiers.classifier import Classifier, ClassifierFactory
 from pybrain.utilities import abstractMethod
 from numpy import *
 
 __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
-class VotingFactory(ClassfierFactory):
+class VotingFactory(ClassifierFactory):
     def __init__(self, factories, combinationRule):
         self._factories = factories
         self._combinationRule = combinationRule
