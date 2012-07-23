@@ -40,24 +40,81 @@ def negativeDerivativesCalculator(values):
 
 class Test(unittest.TestCase):
     
-    def testParaboloidOptimizationMinimize(self):
-        optimizer = GradientOptimizer(positiveParabaloidEvaluator, [5., 5.], positiveDerivativesCalculator)
+    def _createPositiveOptimizer(self, startParams):
+        optimizer = GradientOptimizer(positiveParabaloidEvaluator, startParams, positiveDerivativesCalculator)
         optimizer.maxLearningSteps = 200
-        optimizer.verbose = False
         optimizer.minimize = True
+        
+        return optimizer
+    
+    ### Testing that minimization will work correctly from any starting point
+    
+    def testParaboloidOptimizationMinimize1(self):
+        optimizer = self._createPositiveOptimizer([5., 5.])
         result, f = optimizer.learn()
         
         assertListAlmostEqual(self, result, [0., 0.], 0.001)
         
-    def testParaboloidOptimizationMaximize(self):
-        optimizer = GradientOptimizer(negativeParabaloidEvaluator, [5., 5.], negativeDerivativesCalculator)
+    def testParaboloidOptimizationMinimize2(self):
+        optimizer = self._createPositiveOptimizer([5., -5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def testParaboloidOptimizationMinimize3(self):
+        optimizer = self._createPositiveOptimizer([-5., 5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def testParaboloidOptimizationMinimize4(self):
+        optimizer = self._createPositiveOptimizer([-5., -5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def _createNegativeOptimizer(self, startParams):
+        optimizer = GradientOptimizer(negativeParabaloidEvaluator, startParams, negativeDerivativesCalculator)
         optimizer.maxLearningSteps = 200
-        optimizer.verbose = False
         optimizer.minimize = False
+        
+        return optimizer
+    
+    ### Testing that maximization will work correctly from any starting point
+    
+    def testParaboloidOptimizationMaximize1(self):
+        optimizer = self._createNegativeOptimizer([5., 5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def testParaboloidOptimizationMaximize2(self):
+        optimizer = self._createNegativeOptimizer([5., -5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def testParaboloidOptimizationMaximize3(self):
+        optimizer = self._createNegativeOptimizer([-5., 5.])
+        result, f = optimizer.learn()
+        
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        
+    def testParaboloidOptimizationMaximize4(self):
+        optimizer = self._createNegativeOptimizer([-5., -5.])
         result, f = optimizer.learn()
         
         assertListAlmostEqual(self, result, [0., 0.], 0.001)
 
+    def testMinChange(self):
+        optimizer = self._createPositiveOptimizer([5., 5.])
+        # This is more than enough to optimize the function
+        optimizer.maxLearningSteps = 10000
+        optimizer.minChange = 1e-6
+        result, f = optimizer.learn()
+
+        assertListAlmostEqual(self, result, [0., 0.], 0.001)
+        self.assertLess(optimizer.numLearningSteps, optimizer.maxLearningSteps)
 
 from pybrain.tests import runModuleTestSuite
 

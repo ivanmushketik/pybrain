@@ -1,5 +1,6 @@
 __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
+import sys
 from numpy import *
 from pybrain.optimization.optimizer import ContinuousOptimizer
 from pybrain.auxiliary.gradientdescent import GradientDescent
@@ -25,20 +26,34 @@ class GradientOptimizer(ContinuousOptimizer):
         self.params = array(initEvaluable)
         
         self.gradient.init(self.params)
-        
-    #TODO: use minChange
+        self.prevFitness = sys.float_info.max
+        self.currentFitness = sys.float_info.min     
+    
     def _learnStep(self):
         gradients = self._calculateGradient()
         assert len(gradients) == len(self.params)
         
         self.params = self.gradient(gradients)
-        self._oneEvaluation(self.params)
+        self.currentFitness = self._oneEvaluation(self.params)
         
     def _calculateGradient(self):
         gradients = array(self.gradientsCalculator(self.params))
         
+        # If we minimize the function we should substract gradients from the current parameter values
         if self.minimize:
             return -gradients
         else:
             return gradients
         
+    def _stoppingCriterion(self):
+        result = False
+        
+        if ContinuousOptimizer._stoppingCriterion(self):
+            result =  True
+        # Check if during the last step we made a significant progress
+        elif abs(self.prevFitness - self.currentFitness) < self.minChange:   
+            result =  True
+        
+        self.prevFitness = self.currentFitness
+        
+        return result
