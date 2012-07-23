@@ -9,7 +9,7 @@ class GradientOptimizer(ContinuousOptimizer):
     """
     Derivaties based function optimization
     """
-    def __init__(self, evaluator, initEvaluable, gradientsCalculator, gradient = GradientDescent(), minChange = 1e-6):
+    def __init__(self, evaluator=None, initEvaluable=None, gradientsCalculator=None, gradient = GradientDescent(), minChange = 1e-6, minimize = True):
         """
         evaluator - the same as in superclass
         initEvaluable - the same as in superclass
@@ -19,25 +19,33 @@ class GradientOptimizer(ContinuousOptimizer):
         gradient (GradientDescent) - class that changes values of parameters using current gradient
         minChange -  
         """
-        ContinuousOptimizer.__init__(self, evaluator, initEvaluable)
+        
         self.gradientsCalculator = gradientsCalculator
         self.gradient = gradient
-        self.minChange = minChange
-        self.params = array(initEvaluable)
+        self.minChange = minChange        
         
-        self.gradient.init(self.params)
         self.prevFitness = sys.float_info.max
         self.currentFitness = sys.float_info.min     
+        
+        initEvaluable = array(initEvaluable)
+        ContinuousOptimizer.__init__(self, evaluator, initEvaluable)
+        self.minimize = minimize
     
+    def _setInitEvaluable(self, evaluable):
+        evaluable = array(evaluable)
+        ContinuousOptimizer._setInitEvaluable(self, evaluable)
+        
+        self.gradient.init(evaluable)
+        
     def _learnStep(self):
         gradients = self._calculateGradient()
-        assert len(gradients) == len(self.params)
+        assert len(gradients) == len(self.bestEvaluable)
         
-        self.params = self.gradient(gradients)
-        self.currentFitness = self._oneEvaluation(self.params)
+        params = self.gradient(gradients)
+        self.currentFitness = self._oneEvaluation(params)
         
     def _calculateGradient(self):
-        gradients = array(self.gradientsCalculator(self.params))
+        gradients = array(self.gradientsCalculator(self.bestEvaluable))
         
         # If we minimize the function we should substract gradients from the current parameter values
         if self.minimize:

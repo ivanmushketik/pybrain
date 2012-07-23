@@ -35,20 +35,21 @@ class Test(unittest.TestCase):
     def testTrainingOnSepervisedDataset(self):
         DS = SupervisedDataSet(2, 1)
         DS.addSample([ 0, 0 ] , [0])
-        DS.addSample([ 0, 1 ] , [0])
-        DS.addSample([ 1, 0 ] , [0])
-        DS.addSample([ 1, 1 ] , [1])
+        DS.addSample([ 0, 1 ] , [1])
+        DS.addSample([ 1, 0 ] , [1])
+        DS.addSample([ 1, 1 ] , [0])
         
         network = N = buildNetwork(2, 4, 1)
         trainer = BackpropTrainer(N, learningrate = 0.01, momentum = 0.99)
+        trainer.verbose = True
         
         nnf = NeuralNetworkFactory(network, trainer, seed=2, iterationsNum=500)
         nnClassifier = nnf.buildClassifier(DS)
         
-        self.assertAlmostEqual(nnClassifier.getPrediction([0, 0]), 0, delta=0.001) 
-        self.assertAlmostEqual(nnClassifier.getPrediction([0, 1]), 0, delta=0.001)
-        self.assertAlmostEqual(nnClassifier.getPrediction([1, 0]), 0, delta=0.001)
-        self.assertAlmostEqual(nnClassifier.getPrediction([1, 1]), 1, delta=0.001)  
+        self.assertAlmostEqual(nnClassifier.getPrediction([0, 0]), 0, delta=0.01) 
+        self.assertAlmostEqual(nnClassifier.getPrediction([0, 1]), 1, delta=0.01)
+        self.assertAlmostEqual(nnClassifier.getPrediction([1, 0]), 1, delta=0.01)
+        self.assertAlmostEqual(nnClassifier.getPrediction([1, 1]), 0, delta=0.01)  
 
 
 if __name__ == "__main__":

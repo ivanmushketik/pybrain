@@ -1,8 +1,5 @@
-'''
-Created on 15 Jul 2012
+__author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
-@author: proger
-'''
 from numpy import *
 import unittest
 from pybrain.supervised.classifiers.classifier import Classifier
@@ -21,8 +18,6 @@ class ClassifiersTest(unittest.TestCase):
         expected = 0
         self.assertEqual(result, expected)
 
-
-__author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
 from pybrain.tests import runModuleTestSuite
 
