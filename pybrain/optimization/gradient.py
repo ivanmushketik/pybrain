@@ -36,6 +36,8 @@ class GradientOptimizer(ContinuousOptimizer):
         ContinuousOptimizer._setInitEvaluable(self, evaluable)
         
         self.gradient.init(evaluable)
+        self.prevFitness = sys.float_info.max
+        self.currentFitness = sys.float_info.min     
         
     def _learnStep(self):
         gradients = self._calculateGradient()

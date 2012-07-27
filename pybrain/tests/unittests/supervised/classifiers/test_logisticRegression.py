@@ -5,6 +5,7 @@ from pybrain.tests.helpers import assertListAlmostEqual
 from pybrain.tools.functions import sigmoid
 from pybrain.optimization.gradient import GradientOptimizer
 from pybrain.auxiliary.gradientdescent import GradientDescent
+from pybrain.tests.unittests.supervised.classifiers.utils import createFromGrid
 __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
 import unittest
@@ -92,6 +93,92 @@ class LogisticRegressionFactoryTest(unittest.TestCase):
         self.assertEqual(classifier.getPrediction([-8, -3]),   1)
         self.assertEqual(classifier.getPrediction([-9, -9]),   1)        
 
+    def testTwoDimensionalClassification1(self):
+        # Coordinates plane for classification task
+        #                  1111111
+        # X      01234567890123456   #Y
+        grid = [' 1   1           ', #0
+                ' 1   1       0  0', #1
+                '                 ', #2
+                '             0  0', #3
+                '                 ', #4
+                '    0   0        ', #5
+                '                 ', #6
+                '    0   0        ', #7
+                
+                ]
+        
+        dataset = ClassificationDataSet(2, nb_classes=2, class_labels= ['0', '1'])
+        
+        createFromGrid(grid, dataset)
+        
+        optimizer = GradientOptimizer(minChange=1e-6)
+        optimizer.maxLearningSteps = 10000
+        optimizer.verbose = False
+        lrf = LogisticRegressionFactory(optimizer)
+        classifier = lrf.buildClassifier(dataset)
+        
+        self.assertEqual(classifier.getPrediction([0, 3]),  1)
+        self.assertEqual(classifier.getPrediction([1, 3]),  1)
+        
+    def testTwoDimensionalClassification2(self):
+        # Coordinates plane for classification task
+        #                  1111111
+        # X      01234567890123456   #Y
+        grid = [' 0   0           ', #0
+                ' 0   0       0  0', #1
+                '                 ', #2
+                '             0  0', #3
+                '                 ', #4
+                '    1   1        ', #5
+                '                 ', #6
+                '    1   1        ', #7
+                
+                ]
+        
+        dataset = ClassificationDataSet(2, nb_classes=2, class_labels= ['0', '1'])
+        
+        createFromGrid(grid, dataset)
+        
+        optimizer = GradientOptimizer(minChange=1e-6)
+        optimizer.maxLearningSteps = 10000
+        optimizer.verbose = False
+        lrf = LogisticRegressionFactory(optimizer)
+        classifier = lrf.buildClassifier(dataset)
+        
+        self.assertEqual(classifier.getPrediction([6, 5]),  1)
+        self.assertEqual(classifier.getPrediction([6, 6]),  1)
+        
+    def testTwoDimensionalClassification3(self):
+        # Coordinates plane for classification task
+        #                  1111111
+        # X      01234567890123456   #Y
+        grid = [' 0   0           ', #0
+                ' 0   0       1  1', #1
+                '                 ', #2
+                '             1  1', #3
+                '                 ', #4
+                '    0   0        ', #5
+                '                 ', #6
+                '    0   0        ', #7
+                
+                ]
+        
+        dataset = ClassificationDataSet(2, nb_classes=2, class_labels= ['0', '1'])
+        
+        createFromGrid(grid, dataset)
+        
+        optimizer = GradientOptimizer(minChange=1e-6)
+        optimizer.maxLearningSteps = 10000
+        optimizer.verbose = False
+        lrf = LogisticRegressionFactory(optimizer)
+        classifier = lrf.buildClassifier(dataset)
+        
+        print classifier.getPrediction([0, 12])
+        print classifier.getPrediction([12, 0])
+               
+        self.assertEqual(classifier.getPrediction([15, 2]), 1)
+        self.assertEqual(classifier.getPrediction([14, 2]), 1)
 
 from pybrain.tests import runModuleTestSuite
 

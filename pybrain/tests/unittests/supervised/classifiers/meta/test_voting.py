@@ -6,24 +6,10 @@ from pybrain.tests.helpers import *
 from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.classifiers.classifier import ClassifierFactory, Classifier
 from pybrain.supervised.classifiers.meta.voting import VotingFactory, MajorVoting, SumRule, MedianRule, MaximumProbabilityRule, MinimumProbabilityRule, ProductRule, WeightedSumRule
-
-class MockFactory(ClassifierFactory):
-
-    def __init__(self, classifier):
-        self.classifier = classifier
-
-    def _build(self, dataset):
-        return self.classifier
+from pybrain.tests.unittests.supervised.classifiers.utils import ConstantClassifier,\
+    MockFactory
 
 
-class ConstantClassifier(Classifier):
-    def __init__(self, returnValues):
-        Classifier.__init__(self, len(returnValues))
-
-        self.returnValues = array(returnValues)
-
-    def getDistribution(self, values):
-        return self.returnValues
 
 class VotingTestCase(unittest.TestCase):
     def testMajorVoting(self):

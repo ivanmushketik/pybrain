@@ -138,6 +138,10 @@ class BlackBoxOptimizer(DirectSearchLearner):
         self._additionalInit()
         self.bestEvaluable = self._initEvaluable
         
+        # reseting the optimizer
+        self.numLearningSteps = 0
+        self.numEvaluations = 0
+        
     def _flipDirection(self):
         self.__evaluator = oppositeFunction(self.__evaluator)
         if self.desiredEvaluation is not None:

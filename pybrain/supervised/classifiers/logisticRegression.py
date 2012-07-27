@@ -21,7 +21,7 @@ class LogisticRegressionFactory(ClassifierFactory):
             # Binary classification problem
             return self._createLogisticRegression(dataset)
         else:
-            return self._returnOneVsAllLogisticRegression(dataset)
+            raise ValueError("Logistic regression can handle only binary classification task. Please use multi class classification instead")
         
     def _createLogisticRegression(self, dataset):
         X, Y = self._getMatricies(dataset)
@@ -95,20 +95,6 @@ class LogisticRegressionFactory(ClassifierFactory):
         
         return X, Y
     
-    def _returnOneVsAllLogisticRegression(self, dataset):
-        classifiers = []
-        for i, clazz in enumerate(dataset.class_labels):
-            singleClassDataset = self._createDatasetForClass(dataset, clazz)
-            classifier = self._createLogisticRegression(singleClassDataset)
-            
-            classifiers.append(classifier)
-            
-        return _MulticlassLogisticRegression(classifiers)
-            
-    def _createDatasetForClass(self, dataset, clazz):
-        #TODO: Implement one-vs-all dataset creation
-        pass
-
 class _LogisticRegression(Classifier):
     """
     This class is created by LogisticRegressionFactory for binary classification problems
@@ -129,18 +115,7 @@ class _LogisticRegression(Classifier):
     
     def _appendBiasTerm(self, values):
         return hstack( ([1], values) )
-        
-class _MulticlassLogisticRegression(Classifier):
-    """
-    This class is created by LogisticRegressionFactory for multi-class classification
-    """
-    def __init__(self, logisticRegressions):
-        """
-        logisticRegressions(iterable) - collection of logisitc regression classifiers 
-        """
-        self.logisticRegressions = logisticRegressions
-        
-    def getDistribution(self, values):
-        distribution = [classifier.getPrediction().max() for classifier in self.logisticRegressions]
-        return array(distribution)
-        
+    
+    def distributionLength(self):
+        # Logistic regression 
+        return 2

@@ -38,8 +38,9 @@ class CombinationRule:
         abstractMethod()
 
 class MajorVoting(CombinationRule):
+    
     def combine(self, classifiers, value):
-        numberOfClasses = classifiers[0].distributionLength
+        numberOfClasses = classifiers[0].getDistributionLength()
         
         votes ={}
         for classifier in classifiers:
