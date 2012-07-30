@@ -113,7 +113,7 @@ class LogisticRegressionFactoryTest(unittest.TestCase):
         createFromGrid(grid, dataset)
         
         optimizer = GradientOptimizer(minChange=1e-6)
-        optimizer.maxLearningSteps = 10000
+        optimizer.maxLearningSteps = 1000
         optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
         classifier = lrf.buildClassifier(dataset)
@@ -141,7 +141,7 @@ class LogisticRegressionFactoryTest(unittest.TestCase):
         createFromGrid(grid, dataset)
         
         optimizer = GradientOptimizer(minChange=1e-6)
-        optimizer.maxLearningSteps = 10000
+        optimizer.maxLearningSteps = 1000
         optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
         classifier = lrf.buildClassifier(dataset)
@@ -169,16 +169,70 @@ class LogisticRegressionFactoryTest(unittest.TestCase):
         createFromGrid(grid, dataset)
         
         optimizer = GradientOptimizer(minChange=1e-6)
-        optimizer.maxLearningSteps = 10000
+        optimizer.maxLearningSteps = 1000
+        optimizer.verbose = False
+        lrf = LogisticRegressionFactory(optimizer)
+        classifier = lrf.buildClassifier(dataset)
+                 
+        self.assertEqual(classifier.getPrediction([15, 2]), 1)
+        self.assertEqual(classifier.getPrediction([14, 2]), 1)
+        
+    def testNonLinearClassificaion(self):
+        # This tests checks if logistic regression classifier will able
+        # to classify non linear separable data
+        # Data set consists of two classes were elements of class 0
+        # are inside the circle of radius 0.5 and elements with class 1 
+        # are outside this circle
+        dataset = ClassificationDataSet(4, nb_classes=2, class_labels= ['0', '1'])
+        
+        dataset.appendLinked(self._getSquaredTerms([0.5,  0.5]),  [0])
+        dataset.appendLinked(self._getSquaredTerms([0,    0.5]),  [0])
+        dataset.appendLinked(self._getSquaredTerms([0.5,  0]),    [0])
+        dataset.appendLinked(self._getSquaredTerms([0,    0]),    [0])
+        dataset.appendLinked(self._getSquaredTerms([0.3,  0.2]),  [0])
+        dataset.appendLinked(self._getSquaredTerms([0.3,  -0.5]), [0])
+        dataset.appendLinked(self._getSquaredTerms([-0.3, 0.5]),  [0])
+        dataset.appendLinked(self._getSquaredTerms([-0.4, 0]),    [0])
+        dataset.appendLinked(self._getSquaredTerms([0.6,  -0.3]), [0])
+        dataset.appendLinked(self._getSquaredTerms([-0.3, -0.5]), [0])
+        
+        dataset.appendLinked(self._getSquaredTerms([2,  4]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([4,  -5]), [1])
+        dataset.appendLinked(self._getSquaredTerms([-3, 2]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([4,  4]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([-3, 5]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([-2, -4]), [1])
+        dataset.appendLinked(self._getSquaredTerms([-5, 0]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([5,  0]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([4,  3]),  [1])
+        dataset.appendLinked(self._getSquaredTerms([-5, 1]),  [1])
+        
+        optimizer = GradientOptimizer(minChange=1e-6)
+        optimizer.maxLearningSteps = 1000
         optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
         classifier = lrf.buildClassifier(dataset)
         
-        print classifier.getPrediction([0, 12])
-        print classifier.getPrediction([12, 0])
-               
-        self.assertEqual(classifier.getPrediction([15, 2]), 1)
-        self.assertEqual(classifier.getPrediction([14, 2]), 1)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([0.1,  0.1])),  0)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([0.1,  -0.1])), 0)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([-0.1, 0.1])),  0)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([-0.1, -0.1])), 0)
+        
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([4,  4])),  1)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([4,  -4])), 1)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([-4, 4])),  1)
+        self.assertEqual(classifier.getPrediction(self._getSquaredTerms([-4, -4])), 1)
+        
+        
+    def _getSquaredTerms(self, vector):
+        """
+        Get values in vector and squared values concatenated in a single result vector
+        """
+        result = list(vector)
+        
+        for el in vector:
+            result.append(el ** 2)
+        return result
 
 from pybrain.tests import runModuleTestSuite
 

@@ -10,18 +10,21 @@ from pybrain.supervised.classifiers.meta.voting import _Voting, MajorVoting
 
 class OneVsAll(ClassifierFactory):
     '''
-    classdocs
+    Create a multi-class classifier using several binary classifiers. For each class in a multiclass dataset
+    it creates a binary classifier that learns to distinguish this class. This method therefore builds N
+    classifiers, where N - number of classes in a dataset.
     '''
 
     def __init__(self, classifierFactory):
         '''
-        Constructor
+        classifierFactory - factory that will create a binary classifier that will be used to create 
+        multiclass classifier
         '''
         self.classifierFactory = classifierFactory
         
     def _build(self, dataset):        
         classifiers = []
-        for classValue, className in enumerate(dataset.class_labels):
+        for classValue in range(len(dataset.class_labels)):
             singleClassDataset = self._createDatasetForClass(dataset, classValue)
             classifier = self.classifierFactory.buildClassifier(singleClassDataset)
             
@@ -48,6 +51,11 @@ class _OneVsAll(Classifier):
         self.classifiers = classifiers
         
     def getDistribution(self, values):
+        # Implementation of variation of voting algorithm
+        # If classifier N confident that current instance 
+        # belongs to its class, this class receives a vote
+        # otherwise all classes except class N receives 
+        # a vote
         count = array([0.] * len(self.classifiers))
         for indx, classifier in enumerate(self.classifiers):
             classDistribution = classifier.getDistribution(values)

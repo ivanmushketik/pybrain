@@ -20,11 +20,6 @@ To make some nice sidelengths, we cheat on omega
 
     >>> m = nearoptimal.MultiDimHash(dim=dim, omega=omega, prob=0.8)
 
-    >>> m.radius
-    1.189207115002721
-    >>> m.radiusSquared
-    1.4142135623730949
-
 This gives us hypecube sidelength of
 
     >>> SIDELENGTH = sqrt(sqrt(2)) * omega
@@ -116,6 +111,21 @@ Example Usage:
 
 
 """
+from math import sqrt
+from unittest.case import TestCase
+from pybrain.supervised.knn.lsh import nearoptimal
+
+class NearoptimalTestCase(TestCase):
+    # Implement part of the test as unit test
+    # to avoid prolem with floats comparison
+    def testRadius(self):
+        dim = 2
+        omega = 5 / sqrt(sqrt(dim))
+        
+        m = nearoptimal.MultiDimHash(dim=dim, omega=omega, prob=0.8)
+        self.assertAlmostEqual(m.radius, 1.189207115002721)
+        self.assertAlmostEqual(m.radiusSquared, 1.4142135623730949)
+        
 
 from pybrain.tests import runModuleTestSuite
 

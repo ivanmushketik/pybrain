@@ -39,7 +39,7 @@ class TestOneVsAllFactory(unittest.TestCase):
         createFromGrid(grid, dataset)
         
         optimizer = GradientOptimizer(minChange=1e-6)
-        optimizer.maxLearningSteps = 10000
+        optimizer.maxLearningSteps = 1000
         optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
         oneVsAll = OneVsAll(lrf)
