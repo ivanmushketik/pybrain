@@ -133,6 +133,7 @@ class BlackBoxOptimizer(DirectSearchLearner):
             self._flipDirection()
                                       
         #set the starting point for optimization (as provided, or randomly)
+        self.numParameters = None
         self._setInitEvaluable(initEvaluable)        
         self.bestEvaluation = None
         self._additionalInit()

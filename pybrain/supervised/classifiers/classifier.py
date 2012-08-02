@@ -6,7 +6,7 @@ __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 class ClassifierFactory:
     def buildClassifier(self, dataset):
         if not isinstance(dataset, SupervisedDataSet):
-            raise TypeError("Only SupervisedDataSet can be used to build a classifier")
+            raise TypeError("Only SupervisedDataSet can be used to build a classifier. Received %s instead" % (type(dataset)))
 
         return self._build(dataset)
 
@@ -29,6 +29,9 @@ class Classifier:
 
     def getDistribution(self, values):
         """Returns NumPy array of posterior distributions for each class."""
+        abstractMethod()
+        
+    def distributionLength(self):
         abstractMethod()
         
 
