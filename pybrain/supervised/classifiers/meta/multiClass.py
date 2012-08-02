@@ -30,7 +30,7 @@ class OneVsAll(ClassifierFactory):
             
             classifiers.append(classifier)
             
-        return _OneVsAll(classifiers)
+        return _OneVsAllVoting(classifiers)
             
     def _createDatasetForClass(self, dataset, classValue):
         datasetForClass = ClassificationDataSet(dataset.getDimension('input'), nb_classes=2)
@@ -46,7 +46,7 @@ class OneVsAll(ClassifierFactory):
                 
         return datasetForClass 
     
-class _OneVsAll(Classifier):
+class _OneVsAllVoting(Classifier):
     def __init__(self, classifiers):
         self.classifiers = classifiers
         
@@ -69,4 +69,84 @@ class _OneVsAll(Classifier):
         distribution = count / count.sum()
         
         return distribution
+    
+    def distributionLength(self):
+        return len(self.classifiers)
+
+class _AllVsAllVoting(Classifier):    
+    def __init__(self, classifiers, pairs, numClasses):
+        self.classifiers = classifiers
+        self.pairs = pairs
+        self.numClasses = numClasses
+        
+    def getDistribution(self, values):
+        votingCount = array([0.] * self.numClasses)
+        
+        for i, classifier in enumerate(self.classifiers):
+            prediction = classifier.getPrediction(values)
             
+            # Get class for which current classifier voted
+            classValue = self.pairs[i][prediction]
+            votingCount[classValue] += 1
+            
+        distribution = votingCount / votingCount.sum()
+        
+        return distribution
+        
+    def distributionLength(self):
+        return self.numClasses
+    
+            
+class AllVsAllFactory(ClassifierFactory):
+    """
+    Multiclass classification algorithm. It traines m*(m - 1)/2 classifiers for each pair of classes.
+    To predict result class value every trained classifers vote for one of two classes. The result is 
+    selected by majority voting.
+    """
+    def __init__(self, classifierFactory):
+        '''
+        classifierFactory - factory that will create a binary classifier that will be used to create 
+        multiclass classifier
+        '''
+        self.classifierFactory = classifierFactory
+        
+    def _build(self, dataset):
+        classifiers = []
+        
+        classPairs = self._generateClassPairs(dataset)
+        
+        for pair in classPairs:
+            # Create dataset with instances that have only one of two classes in a pair
+            pairDataset = self._getFilteredDataset(dataset, pair)
+            
+            classifier = self.classifierFactory.buildClassifier(pairDataset)
+            classifiers.append(classifier)
+        
+        return _AllVsAllVoting(classifiers, classPairs, dataset.nClasses)
+    
+    def _generateClassPairs(self, dataset):
+        pairs = []
+        for i in range(dataset.nClasses):
+            for j in range(i, dataset.nClasses):
+                if i != j:
+                    pairs.append((i, j))
+                
+        return pairs
+    
+    def _getFilteredDataset(self, dataset, pair):
+        datasetForPair = ClassificationDataSet(dataset.getDimension('input'), nb_classes=2)
+        
+        for instance in dataset:
+            input = instance[0]
+            target = instance[1]
+            
+            classValue = target[0]
+            
+            # First class in pair is negative class and the second one is a positive class
+            if classValue == pair[0]:
+                datasetForPair.appendLinked(input, [0])
+            elif classValue == pair[1]:
+                datasetForPair.appendLinked(input, [1])
+                
+        return datasetForPair
+    

@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
         
         network = N = buildNetwork(2, 4, 1)
         trainer = BackpropTrainer(N, learningrate = 0.01, momentum = 0.99)
-        trainer.verbose = True
+        trainer.verbose = False
         
         nnf = NeuralNetworkFactory(network, trainer, seed=2, iterationsNum=500)
         nnClassifier = nnf.buildClassifier(DS)
