@@ -33,6 +33,6 @@ class Classifier:
         
     def distributionLength(self):
         abstractMethod()
-        
+
 
 
