@@ -40,7 +40,7 @@ class CombinationRule:
 class MajorVoting(CombinationRule):
     
     def combine(self, classifiers, value):
-        numberOfClasses = classifiers[0].getDistributionLength()
+        numberOfClasses = classifiers[0].distributionLength()
         
         votes ={}
         for classifier in classifiers:
@@ -48,7 +48,7 @@ class MajorVoting(CombinationRule):
             votes[prediction] = votes.get(prediction, 0) + 1
     
         votesArr = array([0] * numberOfClasses)
-        for i in range(len(votes)):
+        for i in range(numberOfClasses):
             votesArr[i] = votes.get(i, 0)
            
                     

@@ -15,7 +15,7 @@ class ClassifierFactory:
 
 class Classifier:
     def __init__(self, distributionLength):
-        self.distributionLength = distributionLength
+        self.numClasses = distributionLength
     
     def getPrediction(self, values):
         distribution = self.getDistribution(values)

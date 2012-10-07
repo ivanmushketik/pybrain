@@ -22,7 +22,7 @@ class ConstantClassifier(Classifier):
     def getDistribution(self, values):
         return self.returnValues
     
-    def getDistributionLength(self):
+    def distributionLength(self):
         return len(self.returnValues)
 
 def createFromGrid(grid, dataset):
