@@ -73,8 +73,8 @@ class StackingCombinationRule(CombinationRule):
         self.l1Classifier = l1Classifier
         self.useDistribution = useDistribution
     
-    def combine(self, classifiers, value):
-        l1Input = _getLevel1Input(classifiers, value, self.useDistribution)
+    def combine(self, classifiers, input):
+        l1Input = _getLevel1Input(classifiers, input, self.useDistribution)
         
         return self.l1Classifier.getDistribution(l1Input)
     

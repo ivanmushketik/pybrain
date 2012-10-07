@@ -27,7 +27,7 @@ class Classifier:
 
         return maxIndx
 
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         """Returns NumPy array of posterior distributions for each class."""
         abstractMethod()
         

@@ -8,7 +8,7 @@ class TestClassifier(Classifier):
     def __init__(self, distribution):
         self._distribution = array(distribution)
     
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         return self._distribution
 
 class ClassifiersTest(unittest.TestCase):

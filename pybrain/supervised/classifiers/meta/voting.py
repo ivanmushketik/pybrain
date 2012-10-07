@@ -33,18 +33,18 @@ class CombinationRule:
     """Base class for combiners that produce prediction by combining 
        predictions of individual classifiers in voting.       
         """
-    def combine(self, classifiers, value):
+    def combine(self, classifiers, input):
         """Receives list of trained classifers """
         abstractMethod()
 
 class MajorVoting(CombinationRule):
     
-    def combine(self, classifiers, value):
+    def combine(self, classifiers, input):
         numberOfClasses = classifiers[0].distributionLength()
         
         votes ={}
         for classifier in classifiers:
-            prediction = classifier.getPrediction(value)
+            prediction = classifier.getPrediction(input)
             votes[prediction] = votes.get(prediction, 0) + 1
     
         votesArr = array([0] * numberOfClasses)
@@ -58,8 +58,8 @@ class MajorVoting(CombinationRule):
         return array(distribution)
     
 class DistributionBasedRule(CombinationRule):
-    def combine(self, classifiers, value):
-        distributionMatrix = array([classifier.getDistribution(value) for classifier in classifiers])
+    def combine(self, classifiers, input):
+        distributionMatrix = array([classifier.getDistribution(input) for classifier in classifiers])
         
         combinedDistribution = self._getCombinedDistribution(distributionMatrix, len(classifiers))
         
@@ -118,5 +118,5 @@ class _Voting(Classifier):
         self._classifiers = classifiers
         self._combinationRule = combinationRule
     
-    def getDistribution(self, values):
-        return self._combinationRule.combine(self._classifiers, values) 
+    def getDistribution(self, input):
+        return self._combinationRule.combine(self._classifiers, input) 

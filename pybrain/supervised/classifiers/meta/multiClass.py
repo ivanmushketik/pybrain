@@ -50,7 +50,7 @@ class _OneVsAllVoting(Classifier):
     def __init__(self, classifiers):
         self.classifiers = classifiers
         
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         # Implementation of variation of voting algorithm
         # If classifier N confident that current instance 
         # belongs to its class, this class receives a vote
@@ -58,7 +58,7 @@ class _OneVsAllVoting(Classifier):
         # a vote
         count = array([0.] * len(self.classifiers))
         for indx, classifier in enumerate(self.classifiers):
-            classDistribution = classifier.getDistribution(values)
+            classDistribution = classifier.getDistribution(input)
             if classDistribution[1] > classDistribution[0]:
                 count[indx] += 1
             else:
@@ -79,11 +79,11 @@ class _AllVsAllVoting(Classifier):
         self.pairs = pairs
         self.numClasses = numClasses
         
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         votingCount = array([0.] * self.numClasses)
         
         for i, classifier in enumerate(self.classifiers):
-            prediction = classifier.getPrediction(values)
+            prediction = classifier.getPrediction(input)
             
             # Get class for which current classifier voted
             classValue = self.pairs[i][prediction]

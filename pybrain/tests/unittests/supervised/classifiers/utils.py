@@ -19,7 +19,7 @@ class ConstantClassifier(Classifier):
 
         self.returnValues = array(returnValues)
 
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         return self.returnValues
     
     def distributionLength(self):

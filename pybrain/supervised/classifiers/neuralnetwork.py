@@ -56,6 +56,6 @@ class _NeuralNetworkClassifier(Classifier):
     def __init__(self, module):
         self._module = module
     
-    def getDistribution(self, values):
-        return self._module.activate(values)
+    def getDistribution(self, input):
+        return self._module.activate(input)
         

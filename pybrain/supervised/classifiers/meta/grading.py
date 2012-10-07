@@ -80,12 +80,12 @@ class _Grading(Classifier):
         self.gradingClassifiers = gradingClassifiers
         self.combinationRule = combinationRule
         
-    def getDistribution(self, values):
+    def getDistribution(self, input):
         correctClassifiers = []
         
         for i in range(len(self.baseClassifiers)):
             gradingClassifier = self.gradingClassifiers[i]
-            grade = gradingClassifier.getPrediction(values)
+            grade = gradingClassifier.getPrediction(input)
             
             if grade == CorrectPrediction:
                 correctClassifiers.append(self.baseClassifiers[i])
@@ -93,6 +93,6 @@ class _Grading(Classifier):
         if not len(correctClassifiers):
             correctClassifiers = self.baseClassifiers
             
-        return self.combinationRule.combine(correctClassifiers, values)
+        return self.combinationRule.combine(correctClassifiers, input)
     
     

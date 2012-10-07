@@ -182,8 +182,8 @@ class _SVMWithProbability(Classifier):
         self.model = model
         self.index = index
         
-    def getDistribution(self, values):
-        svmResult =  svm_predict([0], [values], self.model, options = '-b 1')
+    def getDistribution(self, input):
+        svmResult =  svm_predict([0], [input], self.model, options = '-b 1')
         shuffledProbabilities = svmResult[2][0]
         
         probabilityDistribution = [0] * len(self.index)
@@ -199,8 +199,8 @@ class _SVMWithoutProbability(Classifier):
         self.model = model
         self.numClasses = numClasses
         
-    def getDistribution(self, values):        
-        svmResult =  svm_predict([0], [values], self.model)
+    def getDistribution(self, input):        
+        svmResult =  svm_predict([0], [input], self.model)
         predictedClass =  svmResult[0][0]
         
         distribution = [0] * self.numClasses
@@ -212,5 +212,5 @@ class _OneClassSVM(Classifier):
     def __init__(self, model):
         self.model = model
         
-    def getDistribution(self, values):   
+    def getDistribution(self, input):   
         pass

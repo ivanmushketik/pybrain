@@ -12,11 +12,11 @@ import unittest
 
 class LogisticRegressionTest(unittest.TestCase):
     def testDistribution(self):
-        values = [1, 2]
+        input = [1, 2]
         thetas = [0.5, 0.4, 0.3]
         classifier = _LogisticRegression(thetas)
         
-        distribution = classifier.getDistribution(values)
+        distribution = classifier.getDistribution(input)
         posProbability = sigmoid(0.5 * 1 + 0.4 * 1 + 0.3 * 2)
         expectedDistribution = [1 - posProbability, posProbability]
         

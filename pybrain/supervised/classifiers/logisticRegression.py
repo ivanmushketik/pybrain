@@ -105,9 +105,9 @@ class _LogisticRegression(Classifier):
         """
         self.thetas = array(thetas)
         
-    def getDistribution(self, values):
-        values = self._appendBiasTerm(values)
-        mul = self.thetas * values
+    def getDistribution(self, input):
+        input = self._appendBiasTerm(input)
+        mul = self.thetas * input
         posProb = sigmoid(mul.sum())
         negProb = 1 - posProb
         
