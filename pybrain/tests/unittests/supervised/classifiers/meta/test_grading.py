@@ -67,7 +67,7 @@ class TestGrading(unittest.TestCase):
         
         optimizer = GradientOptimizer(minChange=1e-6)
         optimizer.maxLearningSteps = 1000
-        optimizer.verbose = True
+        optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
         gradingFactory = GradingFactory([lrf, lrf, lrf], lrf, 0.7, MajorVoting)
         

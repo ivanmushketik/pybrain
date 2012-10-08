@@ -8,7 +8,7 @@ from pybrain.supervised.classifiers.classifier import ClassifierFactory,\
     Classifier
 from pybrain.supervised.classifiers.meta.voting import _Voting, MajorVoting
 
-class OneVsAll(ClassifierFactory):
+class OneVsAllFactory(ClassifierFactory):
     '''
     Create a multi-class classifier using several binary classifiers. For each class in a multiclass dataset
     it creates a binary classifier that learns to distinguish this class. This method therefore builds N

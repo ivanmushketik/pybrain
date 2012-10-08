@@ -5,7 +5,7 @@ from pybrain.tests.unittests.supervised.classifiers.utils import createFromGrid,
 __author__ = 'Ivan Mushketyk, ivan.mushketik@gmail.com'
 
 import unittest
-from pybrain.supervised.classifiers.meta.multiClass import OneVsAll, _OneVsAllVoting,\
+from pybrain.supervised.classifiers.meta.multiClass import OneVsAllFactory, _OneVsAllVoting,\
     AllVsAllFactory, _AllVsAllVoting
 from pybrain.optimization.gradient import GradientOptimizer
 from pybrain.supervised.classifiers.logisticRegression import LogisticRegressionFactory
@@ -43,7 +43,7 @@ class TestOneVsAllFactory(unittest.TestCase):
         optimizer.maxLearningSteps = 1000
         optimizer.verbose = False
         lrf = LogisticRegressionFactory(optimizer)
-        oneVsAll = OneVsAll(lrf)
+        oneVsAll = OneVsAllFactory(lrf)
         classifier = oneVsAll.buildClassifier(dataset)
         
         self.assertEqual(classifier.getPrediction([3, 0]),  0)
